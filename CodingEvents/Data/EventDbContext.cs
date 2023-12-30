@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace CodingEvents.Data
 {
-    public class EventDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
+    public class EventDbContext : IdentityDbContext<User, IdentityRole, string>
     {
         public DbSet<Event> Events { get; set; }
 

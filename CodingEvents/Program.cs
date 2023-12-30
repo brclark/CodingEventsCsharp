@@ -1,22 +1,10 @@
-using CodingEvents.Data;
 using Microsoft.EntityFrameworkCore;
+using CodingEvents.Data;
+using CodingEvents.Models;
 using Microsoft.AspNetCore.Identity;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-builder.Services.AddRazorPages();
-
-builder.Services.AddDefaultIdentity<IdentityUser>
-(options =>
-{
-   options.SignIn.RequireConfirmedAccount = true;
-   options.Password.RequireDigit = false;
-   options.Password.RequiredLength = 10;
-   options.Password.RequireNonAlphanumeric = false;
-   options.Password.RequireUppercase = true;
-   options.Password.RequireLowercase = false;
-}).AddEntityFrameworkStores<EventDbContext>();
 
 //--- MySql connection
 
@@ -24,17 +12,35 @@ builder.Services.AddDefaultIdentity<IdentityUser>
 // working with the .NET 6 (specifically the lack of a Startup.cs)
 //https://learn.microsoft.com/en-us/aspnet/core/migration/50-to-60-samples?view=aspnetcore-6.0#add-configuration-providers
 
-var connectionString = "server=localhost;user=testingMVC;password=testingMVC;database=testingMVC";
-var serverVersion = new MySqlServerVersion(new Version(8, 0, 29));
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var serverVersion = ServerVersion.AutoDetect(connectionString);  
 
-builder.Services.AddDbContext<EventDbContext>(dbContextOptions => dbContextOptions.UseMySql(connectionString, serverVersion));
+builder.Services.AddDbContext<EventDbContext>(options => options.UseMySql(connectionString, serverVersion));
 //--- end of connection syntax
 
+// Add services to the container.
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+builder.Services.AddIdentity<User, IdentityRole>(
+    o => {
+        o.Password.RequireDigit = false;
+        o.Password.RequireNonAlphanumeric = false;
+        o.Password.RequireLowercase = false;
+        o.Password.RequireUppercase = false;
+        o.Password.RequiredLength = 1;
+    })
+    .AddEntityFrameworkStores<EventDbContext>();
+builder.Services.AddScoped<SignInManager<User>>();
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseMigrationsEndPoint();
+}
+else
 {
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -47,7 +53,6 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapRazorPages();
 app.MapControllers();
 
 app.MapControllerRoute(
@@ -55,4 +60,3 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-

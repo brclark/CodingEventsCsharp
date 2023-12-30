@@ -4,39 +4,28 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-CodingEvents-51cf73cc-b22f-450d-abf3-85de7ad82c33</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Views\Events\" />
-    <None Remove="Data\" />
-    <None Remove="ViewModels\" />
-    <None Remove="Pomelo.EntityFrameworkCore.MySql" />
-    <None Remove="Microsoft.EntityFrameworkCore.Relational" />
-    <None Remove="Microsoft.EntityFrameworkCore.Design" />
-    <None Remove="Views\EventCategory\" />
-    <None Remove="Views\Tag\" />
+    <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
   </ItemGroup>
+
   <ItemGroup>
-    <Folder Include="Views\Events\" />
-    <Folder Include="Data\" />
-    <Folder Include="ViewModels\" />
-    <Folder Include="Views\EventCategory\" />
-    <Folder Include="Views\Tag\" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="8.0.0-beta.2" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views/Authentication/" />
   </ItemGroup>
 </Project>

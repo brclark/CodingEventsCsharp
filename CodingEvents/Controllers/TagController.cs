@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CodingEvents.Data;
+﻿using CodingEvents.Data;
 using CodingEvents.Models;
 using CodingEvents.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
@@ -13,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace CodingEvents.Controllers
 {
+    [Authorize]
     public class TagController : Controller
     {
         private EventDbContext context;
@@ -50,7 +48,10 @@ namespace CodingEvents.Controllers
 
         public IActionResult AddEvent(int id)
         {
-            Event theEvent = context.Events.Find(id);
+            Event theEvent = context.Events.FirstOrDefault(r => r.Id == id);
+            if (theEvent == null) {
+                return Redirect("/Tag/");
+            }
             List<Tag> possibleTags = context.Tags.ToList();
 
             AddEventTagViewModel viewModel = new AddEventTagViewModel(theEvent, possibleTags);
