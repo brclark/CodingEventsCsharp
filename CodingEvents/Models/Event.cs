@@ -3,6 +3,9 @@ namespace CodingEvents.Models
 {
     public class Event
     {
+
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         public string Description { get; set; }
@@ -13,7 +16,8 @@ namespace CodingEvents.Models
 
         public int CategoryId { get; set; }
 
-        public int Id { get; set; }
+        public int CreatorId { get; set; }
+        public User Creator { get; set; }
 
         public ICollection<Tag>? Tags { get; set; }
 
