@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 namespace CodingEvents.Models
 {
 	public class EventCategory
@@ -9,7 +10,6 @@ namespace CodingEvents.Models
 
         public List<Event> events { get; set; }
 
-        public int CreatorId { get; set; }
         public User Creator { get; set; }
 
         public EventCategory(string name)

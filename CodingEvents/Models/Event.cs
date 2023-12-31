@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 namespace CodingEvents.Models
 {
     public class Event
@@ -16,7 +16,6 @@ namespace CodingEvents.Models
 
         public int CategoryId { get; set; }
 
-        public int CreatorId { get; set; }
         public User Creator { get; set; }
 
         public ICollection<Tag>? Tags { get; set; }

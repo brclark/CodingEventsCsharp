@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CodingEvents.Models
 {
@@ -11,7 +12,6 @@ namespace CodingEvents.Models
         [StringLength(50, MinimumLength = 3, ErrorMessage = "Name must be between 3 and 50 characters")]
         public string Name { get; set; }
 
-        public int CreatorId { get; set; }
         public User Creator { get; set; }
 
         public ICollection<Event>? Events { get; set; }

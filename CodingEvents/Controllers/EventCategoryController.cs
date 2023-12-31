@@ -2,6 +2,7 @@
 using CodingEvents.Models;
 using CodingEvents.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,16 +14,22 @@ namespace CodingEvents.Controllers
     {
         private EventDbContext context;
 
-        public EventCategoryController(EventDbContext dbContext)
+        private UserManager<User> _userManager;
+
+        public EventCategoryController(EventDbContext dbContext,
+                                    UserManager<User> userManager)
         {
             context = dbContext;
+            _userManager = userManager;
         }
 
         // GET: /<controller>/
         [HttpGet]
         public IActionResult Index()
         {
-            List<EventCategory> categories = context.Categories.ToList();
+            var user = _userManager.GetUserAsync(User).Result;
+            List<EventCategory> categories = context.Categories
+                .Where(c => c.Creator.Id == user.Id).ToList();
             return View(categories);
         }
 
@@ -38,9 +45,11 @@ namespace CodingEvents.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = _userManager.GetUserAsync(User).Result;
                 EventCategory newCategory = new EventCategory
                 {
-                    Name = addEventCategoryViewModel.Name
+                    Name = addEventCategoryViewModel.Name,
+                    Creator = user
                 };
 
                 context.Categories.Add(newCategory);
