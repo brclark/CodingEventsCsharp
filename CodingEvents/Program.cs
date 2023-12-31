@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using CodingEvents.Data;
 using CodingEvents.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Configuration;
+using CodingEvents.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +31,8 @@ builder.Services.AddIdentity<User, IdentityRole>(
     })
     .AddEntityFrameworkStores<EventDbContext>();
 builder.Services.AddScoped<SignInManager<User>>();
+builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<IEventCategoryService, EventCategoryService>();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

@@ -1,11 +1,9 @@
-﻿using CodingEvents.Data;
-using CodingEvents.Models;
+﻿using CodingEvents.Models;
+using CodingEvents.Services;
 using CodingEvents.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,33 +12,32 @@ namespace CodingEvents.Controllers
     [Authorize]
     public class EventsController : Controller
     {
-        private EventDbContext context;
         private readonly UserManager<User> _userManager;
+        private readonly IEventService _eventService;
+        private readonly IEventCategoryService _eventCategoryService;
 
-        public EventsController(EventDbContext dbContext, UserManager<CodingEvents.Models.User> userManager)
+        public EventsController(UserManager<User> userManager,
+                                IEventService eventService,
+                                IEventCategoryService eventCategoryService)
         {
-            context = dbContext;
             _userManager = userManager;
+            _eventService = eventService;
+            _eventCategoryService = eventCategoryService;
         }
 
         // GET: /<controller>/
         public IActionResult Index()
         {
             var user = _userManager.GetUserAsync(User).Result;
-            List<Event> events = context.Events
-                .Include(e => e.Category)
-                .Where(e => e.Creator.Id == user.Id)
-                .ToList();
 
-            return View(events);
+            return View(_eventService.FindAllByCreator(user));
         }
 
         public ActionResult Add()
         {
             var user =  _userManager.GetUserAsync(User).Result;
-            List<EventCategory> categories = context.Categories
-                .Where(c => c.Creator.Id == user.Id).ToList();
-            AddEventViewModel addEventViewModel = new AddEventViewModel(categories);
+            AddEventViewModel addEventViewModel =
+                new AddEventViewModel(_eventCategoryService.FindAllByCreator(user));
 
             return View(addEventViewModel);
         }
@@ -51,20 +48,7 @@ namespace CodingEvents.Controllers
             if (ModelState.IsValid)
             {
                 var user = _userManager.GetUserAsync(User).Result;
-                EventCategory theCategory = context.Categories
-                    .Single(c => c.Id == addEventViewModel.CategoryId &&
-                            c.Creator.Id == user.Id);
-                Event newEvent = new Event
-                {
-                    Name = addEventViewModel.Name,
-                    Description = addEventViewModel.Description,
-                    ContactEmail = addEventViewModel.ContactEmail,
-                    Category = theCategory,
-                    Creator = user
-                };
-
-                context.Events.Add(newEvent);
-                context.SaveChanges();
+                _eventService.SaveViewModel(addEventViewModel, user);
 
                 return Redirect("/Events");
             }
@@ -74,7 +58,8 @@ namespace CodingEvents.Controllers
 
         public IActionResult Delete()
         {
-            ViewBag.events = context.Events.ToList();
+            var user = _userManager.GetUserAsync(User).Result;
+            ViewBag.events = _eventService.FindAllByCreator(user);
 
             return View();
         }
@@ -84,11 +69,8 @@ namespace CodingEvents.Controllers
         {
             foreach (int eventId in eventIds)
             {
-                Event theEvent = context.Events.Find(eventId);
-                context.Events.Remove(theEvent);
+                _eventService.RemoveById(eventId);
             }
-
-            context.SaveChanges();
 
             return Redirect("/Events");
         }
@@ -96,13 +78,8 @@ namespace CodingEvents.Controllers
         public IActionResult Detail(int id)
         {
             var user = _userManager.GetUserAsync(User).Result;
-            Event theEvent = context.Events
-               .Include(e => e.Category)
-               .Include(e => e.Tags)
-               .Single(e => e.Id == id && e.Creator.Id == user.Id);
 
-            EventDetailViewModel viewModel = new EventDetailViewModel(theEvent);
-            return View(viewModel);
+            return View(_eventService.GetDetailViewModel(id, user));
         }
     }
 }

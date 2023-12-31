@@ -13,15 +13,12 @@ namespace CodingEvents.Controllers
     [AllowAnonymous]
     public class AuthenticationController : Controller
     {
-        private EventDbContext context;
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
 
-        public AuthenticationController(EventDbContext dbContext,
-                                        SignInManager<User> signInManager,
+        public AuthenticationController(SignInManager<User> signInManager,
                                         UserManager<User> userManager)
         {
-            context = dbContext;
             _signInManager = signInManager;
             _userManager = userManager;
         }

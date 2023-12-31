@@ -1,5 +1,5 @@
-﻿using CodingEvents.Data;
-using CodingEvents.Models;
+﻿using CodingEvents.Models;
+using CodingEvents.Services;
 using CodingEvents.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -12,15 +12,15 @@ namespace CodingEvents.Controllers
     [Authorize]
     public class EventCategoryController : Controller
     {
-        private EventDbContext context;
-
         private UserManager<User> _userManager;
 
-        public EventCategoryController(EventDbContext dbContext,
-                                    UserManager<User> userManager)
+        private EventCategoryService _categoryService;
+
+        public EventCategoryController(UserManager<User> userManager,
+                                    EventCategoryService categoryService)
         {
-            context = dbContext;
             _userManager = userManager;
+            _categoryService = categoryService;
         }
 
         // GET: /<controller>/
@@ -28,9 +28,7 @@ namespace CodingEvents.Controllers
         public IActionResult Index()
         {
             var user = _userManager.GetUserAsync(User).Result;
-            List<EventCategory> categories = context.Categories
-                .Where(c => c.Creator.Id == user.Id).ToList();
-            return View(categories);
+            return View(_categoryService.FindAllByCreator(user));
         }
 
         [HttpGet]
@@ -46,14 +44,7 @@ namespace CodingEvents.Controllers
             if (ModelState.IsValid)
             {
                 var user = _userManager.GetUserAsync(User).Result;
-                EventCategory newCategory = new EventCategory
-                {
-                    Name = addEventCategoryViewModel.Name,
-                    Creator = user
-                };
-
-                context.Categories.Add(newCategory);
-                context.SaveChanges();
+                _categoryService.SaveViewModel(addEventCategoryViewModel, user);
 
                 return Redirect("/EventCategory");
             }
