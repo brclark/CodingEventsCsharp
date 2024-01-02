@@ -17,5 +17,8 @@ namespace CodingEvents.ViewModels{
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+
+        [Display(Name = "I am an event organizer")]
+        public Boolean IsOrganizer { get; set; }
     }
 }
