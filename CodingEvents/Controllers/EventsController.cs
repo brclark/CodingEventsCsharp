@@ -33,6 +33,7 @@ namespace CodingEvents.Controllers
             return View(_eventService.FindAllByCreator(user));
         }
 
+        [Authorize(Roles = "Organizer")]
         public ActionResult Add()
         {
             var user =  _userManager.GetUserAsync(User).Result;
@@ -42,6 +43,7 @@ namespace CodingEvents.Controllers
             return View(addEventViewModel);
         }
 
+        [Authorize(Roles = "Organizer")]
         [HttpPost]
         public IActionResult Add(AddEventViewModel addEventViewModel)
         {
@@ -56,6 +58,7 @@ namespace CodingEvents.Controllers
             return View(addEventViewModel);
         }
 
+        [Authorize(Roles = "Organizer")]
         public IActionResult Delete()
         {
             var user = _userManager.GetUserAsync(User).Result;
@@ -64,6 +67,7 @@ namespace CodingEvents.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Organizer")]
         [HttpPost]
         public IActionResult Delete(int[] eventIds)
         {

@@ -31,6 +31,7 @@ namespace CodingEvents.Controllers
             return View(_categoryService.FindAllByCreator(user));
         }
 
+        [Authorize(Roles = "Organizer")]
         [HttpGet]
         public IActionResult Create()
         {
@@ -38,6 +39,7 @@ namespace CodingEvents.Controllers
             return View(addEventCategoryViewModel);
         }
 
+        [Authorize(Roles = "Organizer")]
         [HttpPost]
         public IActionResult ProcessCreateEventCategoryForm(AddEventCategoryViewModel addEventCategoryViewModel)
         {

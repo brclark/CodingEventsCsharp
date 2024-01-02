@@ -29,7 +29,7 @@ namespace CodingEvents.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Login(LoginViewModel login, string returnUrl = null)
+        public async Task<ActionResult> Login(LoginViewModel login, string? returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
             if (ModelState.IsValid)
@@ -92,6 +92,11 @@ namespace CodingEvents.Controllers
             await _signInManager.SignOutAsync();
 
             return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

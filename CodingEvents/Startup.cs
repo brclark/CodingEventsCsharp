@@ -1,4 +1,4 @@
-using CodingEvents.Data;
+﻿using CodingEvents.Data;
 using CodingEvents.Models;
 using CodingEvents.Services;
 using Microsoft.AspNetCore.Identity;
@@ -39,10 +39,12 @@ public class Startup
         services.AddScoped<SignInManager<User>>();
         services.AddScoped<IEventService, EventService>();
         services.AddScoped<IEventCategoryService, EventCategoryService>();
+        services.AddScoped<RoleSeeder>()
         services.AddControllersWithViews();
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+        RoleSeeder roleSeeder)
     {
 
         // Configure the HTTP request pipeline.
@@ -56,6 +58,8 @@ public class Startup
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
+
+        roleSeeder.SeedRolesAsync().Wait();
 
         app.UseHttpsRedirection();
         app.UseStaticFiles();

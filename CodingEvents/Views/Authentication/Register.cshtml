@@ -18,5 +18,10 @@
         <input asp-for="ConfirmPassword"></label>
         <span asp-validation-for="ConfirmPassword"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="IsOrganizer"></label>
+        <input type="checkbox" asp-for="IsOrganizer"></label>
+        <span asp-validation-for="IsOrganizer"></span>
+    </div>
     <input type="submit" value="Register">
 </form>
