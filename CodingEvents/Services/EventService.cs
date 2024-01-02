@@ -51,7 +51,8 @@ public class EventService : IEventService
             Description = viewModel.Description,
             ContactEmail = viewModel.ContactEmail,
             Category = category,
-            Creator = creator
+            Creator = creator,
+            Tags = new List<Tag>()
         };
         _context.Events.Add(newEvent);
         _context.SaveChanges();
@@ -60,7 +61,11 @@ public class EventService : IEventService
 
     public EventDetailViewModel GetDetailViewModel(int id, User creator)
     {
-        Event eventToDisplay = FindByIdAndCreator(id, creator);
+        Event eventToDisplay = _context.Events
+            .Include(e => e.Category)
+            .Include(e => e.Tags)
+            .Where(e => e.Id == id && e.Creator.Equals(creator))
+            .FirstOrDefault();
         return new EventDetailViewModel(eventToDisplay);
     }
 

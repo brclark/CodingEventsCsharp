@@ -14,10 +14,10 @@ namespace CodingEvents.Controllers
     {
         private UserManager<User> _userManager;
 
-        private EventCategoryService _categoryService;
+        private IEventCategoryService _categoryService;
 
         public EventCategoryController(UserManager<User> userManager,
-                                    EventCategoryService categoryService)
+                                    IEventCategoryService categoryService)
         {
             _userManager = userManager;
             _categoryService = categoryService;
